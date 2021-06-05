@@ -1,1 +1,1 @@
-# EPD-T-Display
+# E-Paper watch
