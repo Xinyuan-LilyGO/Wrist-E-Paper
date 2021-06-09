@@ -4,10 +4,10 @@
 #define PIN_MOTOR 4
 #define PIN_KEY GPIO_NUM_35
 #define PWR_EN 5
+#define Backlight 33
 
 #define SPI_SCK 14
 #define SPI_DIN 13
-
 #define EPD_CS 15
 #define EPD_DC 2
 #define SRAM_CS -1
@@ -29,9 +29,12 @@ void DeepSleep(void)
   pinMode(EPD_DC, INPUT);
   pinMode(EPD_RESET, INPUT);
   pinMode(EPD_BUSY, INPUT);
+  pinMode(PIN_MOTOR,INPUT);
+  pinMode(Backlight,INPUT),
   esp_sleep_enable_ext0_wakeup(PIN_KEY, 0);
   esp_deep_sleep_start();
 }
+
 
 void setup()
 {
@@ -40,26 +43,30 @@ void setup()
   Serial.println("ESP32 EPD Simple Test");
   SPI.begin(SPI_SCK, -1, SPI_DIN, EPD_CS);
   pinMode(PIN_MOTOR,OUTPUT);
+  pinMode(PWR_EN,OUTPUT);
 
-  digitalWrite(PIN_MOTOR,HIGH);
+  digitalWrite(PWR_EN,HIGH);
+  digitalWrite(PIN_MOTOR, HIGH);
   delay(200);
-  digitalWrite(PIN_MOTOR,LOW);
+  digitalWrite(PIN_MOTOR, LOW);
   delay(100);
-  digitalWrite(PIN_MOTOR,HIGH);
+  digitalWrite(PIN_MOTOR, HIGH);
   delay(200);
-  digitalWrite(PIN_MOTOR,LOW);
-  
+  digitalWrite(PIN_MOTOR, LOW);
+
   display.begin();
   display.setRotation(1);
   display.invertDisplay(true);
   display.clearBuffer();
   display.drawBitmap(0, 0, lilygo, 200, 200, EPD_BLACK);
-  display.display();
-  delay(3000);
-  
+  display.display();  
   DeepSleep();
 }
 
 void loop()
 {
+
+
 }
+
+
