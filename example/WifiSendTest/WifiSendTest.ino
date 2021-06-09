@@ -9,6 +9,7 @@
 #define PIN_MOTOR 4
 #define PIN_KEY 35
 #define PWR_EN 5
+#define Backlight 33
 
 #define SPI_SCK 14
 #define SPI_DIN 13
@@ -46,7 +47,9 @@ void setup()
   Serial.println("ESP32 Send Image test");
   SPI.begin(SPI_SCK, -1, SPI_DIN, EPD_CS);
   pinMode(PIN_MOTOR, OUTPUT);
+  pinMode(PWR_EN,OUTPUT);
 
+  digitalWrite(PWR_EN,HIGH);
   digitalWrite(PIN_MOTOR, HIGH);
   delay(200);
   digitalWrite(PIN_MOTOR, LOW);
