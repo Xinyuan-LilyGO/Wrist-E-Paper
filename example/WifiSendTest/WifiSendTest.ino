@@ -1,4 +1,7 @@
-#include "Adafruit_EPD.h"//https://github.com/adafruit/Adafruit_EPD
+#include <GxEPD.h>
+#include <GxDEPG0150BN/GxDEPG0150BN.h>
+#include <GxIO/GxIO_SPI/GxIO_SPI.h>
+#include <GxIO/GxIO.h>
 #include <WiFi.h>
 #include "IMG.h"
 #include "buff.h"    // POST request data accumulator
@@ -31,14 +34,8 @@ const char *password = "Xydz202104"; //"your password";
 int EPD_dispIndex; // The index of the e-Paper's type
 uint8_t EPD_Image[5000] = {0};
 uint16_t EPD_Image_count = 0;
-Adafruit_SSD1681 display(200, 200, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
-
-const unsigned char lut_partial_update[] =
-    {
-        0x10, 0x18, 0x18, 0x08, 0x18, 0x18, 0x08, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x13, 0x14, 0x44, 0x12,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+GxIO_Class io(SPI, /*CS=*/ 15, /*DC=*/2, /*RST=*/17);
+GxEPD_Class display(io, /*RST=*/17, /*BUSY=*/16);
 
 void setup()
 {
@@ -58,23 +55,24 @@ void setup()
   delay(200);
   digitalWrite(PIN_MOTOR, LOW);
 
-  display.begin();
-  display.setRotation(1);
-  display.setTextColor(EPD_BLACK);
-  display.clearBuffer();
-  display.drawBitmap(0, 0, lilygo, 200, 200, EPD_BLACK);
-  display.display();
+  display.init();
+  display.setRotation(0);
+  display.setTextColor(GxEPD_BLACK);
+  display.fillScreen(GxEPD_WHITE);
+  display.drawBitmap(0, 0, lilygo, 200, 200, GxEPD_BLACK);
+  display.update();
   delay(3000);
 
-  display.clearBuffer();
+  display.fillScreen(GxEPD_WHITE);
   display.setTextSize(2);
   display.setCursor(0, 0);
   display.print("Waitting Connect");
-  display.display();
+  display.update();
 
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED)
   {
+    display.print(".");
     delay(100);
   }
   // Start the server
@@ -84,10 +82,10 @@ void setup()
   // Show obtained IP address in local Wifi net
   Serial.println(myIP = WiFi.localIP());
 
-  display.clearBuffer();
+  display.fillScreen(GxEPD_WHITE);
   display.setCursor(0, 100);
   display.print(myIP);
-  display.display();
+  display.update();
 }
 
 void loop()
@@ -173,7 +171,6 @@ bool Srvr__loop()
         //Serial.printf("EPD %s", EPD_dispMass[EPD_dispIndex].title);
 
         // Initialization
-        //EPD_dispInit();
         //client.print("HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n");
         break;
       }
@@ -186,8 +183,6 @@ bool Srvr__loop()
 
         // Load data into the e-Paper
         // if there is loading function for current channel (black or red)
-        /* if (EPD_dispLoad != 0)
-          EPD_dispLoad(); */
         //client.print("HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n");
 
         // Come back to the image data end
@@ -219,10 +214,10 @@ bool Srvr__loop()
       {
         // Show results 
         EPD_Image_count = 0;
-        display.clearBuffer();
-        display.drawBitmap(0, 0, EPD_Image, 200, 200, EPD_BLACK);
-        display.display();
-
+        display.fillScreen(GxEPD_WHITE);
+        display.drawBitmap(0, 0, EPD_Image, 200, 200, GxEPD_BLACK);
+        display.update();
+        
         //Print log message: show
         Serial.print("\r\nSHOW");
         //client.print("HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n");

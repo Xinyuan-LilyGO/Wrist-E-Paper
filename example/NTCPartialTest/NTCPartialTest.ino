@@ -24,8 +24,8 @@ NTPClient timeClient(ntpUDP, "ntp1.aliyun.com", 60 * 60 * 8, 30 * 60 * 1000);
 GxIO_Class io(SPI, /*CS=5*/ 15, /*DC=*/2, /*RST=*/17);
 GxEPD_Class display(io, /*RST=*/17, /*BUSY=*/16);
 
-const char *ssid = "xinyuan-2";      //"your ssid";
-const char *password = "Xydz202104"; //"your password";
+const char *ssid = "";      //"your ssid";
+const char *password = ""; //"your password";
 
 void setup()
 {

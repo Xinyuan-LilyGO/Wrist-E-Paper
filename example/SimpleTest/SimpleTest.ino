@@ -1,4 +1,7 @@
-#include "Adafruit_EPD.h"//https://github.com/adafruit/Adafruit_EPD
+#include <GxEPD.h>
+#include <GxDEPG0150BN/GxDEPG0150BN.h>
+#include <GxIO/GxIO_SPI/GxIO_SPI.h>
+#include <GxIO/GxIO.h>
 #include "IMG.h"
 
 #define PIN_MOTOR 4
@@ -14,8 +17,8 @@
 #define EPD_RESET 17
 #define EPD_BUSY 16
 
-/// Uncomment the following line if you are using 1.54" EPD with SSD1608
-Adafruit_SSD1681 display(200, 200, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+GxIO_Class io(SPI, /*CS*/ EPD_CS, /*DC=*/EPD_DC, /*RST=*/EPD_RESET);
+GxEPD_Class display(io, /*RST=*/EPD_RESET, /*BUSY=*/EPD_BUSY);
 
 void DeepSleep(void)
 {
@@ -29,12 +32,11 @@ void DeepSleep(void)
   pinMode(EPD_DC, INPUT);
   pinMode(EPD_RESET, INPUT);
   pinMode(EPD_BUSY, INPUT);
-  pinMode(PIN_MOTOR,INPUT);
-  pinMode(Backlight,INPUT),
-  esp_sleep_enable_ext0_wakeup(PIN_KEY, 0);
+  pinMode(PIN_MOTOR, INPUT);
+  pinMode(Backlight, INPUT),
+      esp_sleep_enable_ext0_wakeup(PIN_KEY, 0);
   esp_deep_sleep_start();
 }
-
 
 void setup()
 {
@@ -42,10 +44,10 @@ void setup()
   delay(10);
   Serial.println("ESP32 EPD Simple Test");
   SPI.begin(SPI_SCK, -1, SPI_DIN, EPD_CS);
-  pinMode(PIN_MOTOR,OUTPUT);
-  pinMode(PWR_EN,OUTPUT);
+  pinMode(PIN_MOTOR, OUTPUT);
+  pinMode(PWR_EN, OUTPUT);
 
-  digitalWrite(PWR_EN,HIGH);
+  digitalWrite(PWR_EN, HIGH);
   digitalWrite(PIN_MOTOR, HIGH);
   delay(200);
   digitalWrite(PIN_MOTOR, LOW);
@@ -54,19 +56,17 @@ void setup()
   delay(200);
   digitalWrite(PIN_MOTOR, LOW);
 
-  display.begin();
-  display.setRotation(1);
+  display.init();
+  display.setRotation(0);
   display.invertDisplay(true);
-  display.clearBuffer();
-  display.drawBitmap(0, 0, lilygo, 200, 200, EPD_BLACK);
-  display.display();  
+  display.fillScreen(GxEPD_WHITE);
+  display.drawBitmap(0, 0, lilygo, 200, 200, GxEPD_BLACK);
+  display.update();
+  delay(3000);
+
   DeepSleep();
 }
 
 void loop()
 {
-
-
 }
-
-

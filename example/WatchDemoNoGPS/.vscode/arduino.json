@@ -1,0 +1,4 @@
+{
+    "board": "espressif:esp32:esp32",
+    "port": "COM52"
+}
