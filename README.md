@@ -5,7 +5,6 @@
 
 --------------------------------------
 
-
 <h2 align = "left">Quick start ⚡:</h2>
 
 
@@ -18,6 +17,10 @@
 6. If you do not find the ESP32 series in the development board, then you should see the following installation method [How to install ESP32 in ArduinoIDE](https://github.com/espressif/arduino-esp32/blob/master/docs/arduino-ide/boards_manager.md)
 7. For the version of the board you purchased, please check the product link below 
 8. When you think there is a problem with your board, you can pull the binary file corresponding to your screen model in the firmware directory, follow the `SETTING.png` settings in the directory, download it to the board, and then observe the execution. 
+
+![image1](https://github.com/Xinyuan-LilyGO/E-Paper-watch/blob/main/doc/image/image1.jpg)
+
+![image2](https://github.com/Xinyuan-LilyGO/E-Paper-watch/blob/main/doc/image/image2.jpg)
 
 <h2 align = "left">Product link📷:</h2>
 
