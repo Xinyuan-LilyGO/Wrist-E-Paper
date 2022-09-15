@@ -1,7 +1,8 @@
 // class GxGDEM029T94 : Display class for GDEM029T94 e-Paper from Dalian Good Display Co., Ltd.: www.e-paper-display.com
 //
 // based on Demo Example from Good Display, available here: http://www.e-paper-display.com/download_detail/downloadsId=806.html
-// Controller : SSD1681 : http://www.e-paper-display.com/download_detail/downloadsId=825.html
+// Panel: GDEM029T94 : https://www.good-display.com/product/360.html
+// Controller : SSD1680 : https://www.good-display.com/companyfile/101.html
 //
 // Author : J-M Zingg
 //
@@ -26,7 +27,7 @@
 
 GxGDEM029T94::GxGDEM029T94(GxIO& io, int8_t rst, int8_t busy) :
   GxEPD(GxGDEM029T94_WIDTH, GxGDEM029T94_HEIGHT), IO(io),
-  _current_page(-1), _using_partial_mode(false), _diag_enabled(false),
+  _current_page(-1), _using_partial_mode(false), _diag_enabled(false), _power_is_on(false),
   _rst(rst), _busy(busy)
 {
 }
@@ -181,7 +182,6 @@ void GxGDEM029T94::drawBitmap(const uint8_t *bitmap, uint32_t size, int16_t mode
       _writeData(data);
     }
     delay(GxGDEM029T94_PU_DELAY);
-    _PowerOff();
   }
   else
   {
@@ -218,7 +218,6 @@ void GxGDEM029T94::drawBitmap(const uint8_t *bitmap, uint32_t size, int16_t mode
       _writeData(data);
     }
     _Update_Full();
-    _PowerOff();
   }
 }
 
@@ -349,21 +348,21 @@ void GxGDEM029T94::updateToWindow(uint16_t xs, uint16_t ys, uint16_t xd, uint16_
         swap(xs, ys);
         swap(xd, yd);
         swap(w, h);
-        xs = GxGDEM029T94_WIDTH - xs - w - 1;
-        xd = GxGDEM029T94_WIDTH - xd - w - 1;
+        xs = GxGDEM029T94_WIDTH - xs - w;
+        xd = GxGDEM029T94_WIDTH - xd - w;
         break;
       case 2:
-        xs = GxGDEM029T94_WIDTH - xs - w - 1;
-        ys = GxGDEM029T94_HEIGHT - ys - h - 1;
-        xd = GxGDEM029T94_WIDTH - xd - w - 1;
-        yd = GxGDEM029T94_HEIGHT - yd - h - 1;
+        xs = GxGDEM029T94_WIDTH - xs - w;
+        ys = GxGDEM029T94_HEIGHT - ys - h;
+        xd = GxGDEM029T94_WIDTH - xd - w;
+        yd = GxGDEM029T94_HEIGHT - yd - h;
         break;
       case 3:
         swap(xs, ys);
         swap(xd, yd);
         swap(w, h);
-        ys = GxGDEM029T94_HEIGHT - ys  - h - 1;
-        yd = GxGDEM029T94_HEIGHT - yd  - h - 1;
+        ys = GxGDEM029T94_HEIGHT - ys  - h;
+        yd = GxGDEM029T94_HEIGHT - yd  - h;
         break;
     }
   }
@@ -497,18 +496,26 @@ void GxGDEM029T94::_SetRamPointer(uint8_t addrX, uint8_t addrY, uint8_t addrY1)
 
 void GxGDEM029T94::_PowerOn(void)
 {
-  _writeCommand(0x22);
-  _writeData(0xf8);
-  _writeCommand(0x20);
-  _waitWhileBusy("_PowerOn", power_on_time);
+  if (!_power_is_on)
+  {
+    _writeCommand(0x22);
+    _writeData(0xc0);
+    _writeCommand(0x20);
+    _waitWhileBusy("_PowerOn", power_on_time);
+    _power_is_on = true;
+  }
 }
 
 void GxGDEM029T94::_PowerOff(void)
 {
-  _writeCommand(0x22);
-  _writeData(0x83);
-  _writeCommand(0x20);
-  _waitWhileBusy("_PowerOff", power_off_time);
+  if (_power_is_on)
+  {
+    _writeCommand(0x22);
+    _writeData(0x83);
+    _writeCommand(0x20);
+    _waitWhileBusy("_PowerOff", power_off_time);
+    _power_is_on = false;
+  }
 }
 
 void GxGDEM029T94::_InitDisplay(uint8_t em)
@@ -680,16 +687,16 @@ void GxGDEM029T94::_rotate(uint16_t& x, uint16_t& y, uint16_t& w, uint16_t& h)
     case 1:
       swap(x, y);
       swap(w, h);
-      x = GxGDEM029T94_WIDTH - x - w - 1;
+      x = GxGDEM029T94_WIDTH - x - w;
       break;
     case 2:
-      x = GxGDEM029T94_WIDTH - x - w - 1;
-      y = GxGDEM029T94_HEIGHT - y - h - 1;
+      x = GxGDEM029T94_WIDTH - x - w;
+      y = GxGDEM029T94_HEIGHT - y - h;
       break;
     case 3:
       swap(x, y);
       swap(w, h);
-      y = GxGDEM029T94_HEIGHT - y - h - 1;
+      y = GxGDEM029T94_HEIGHT - y - h;
       break;
   }
 }
@@ -734,7 +741,6 @@ void GxGDEM029T94::drawPagedToWindow(void (*drawCallback)(void), uint16_t x, uin
   }
   delay(GxGDEM029T94_PU_DELAY);
   _current_page = -1;
-  _PowerOff();
 }
 
 void GxGDEM029T94::drawPagedToWindow(void (*drawCallback)(uint32_t), uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint32_t p)
@@ -777,7 +783,6 @@ void GxGDEM029T94::drawPagedToWindow(void (*drawCallback)(uint32_t), uint16_t x,
   }
   delay(GxGDEM029T94_PU_DELAY);
   _current_page = -1;
-  _PowerOff();
 }
 
 void GxGDEM029T94::drawPagedToWindow(void (*drawCallback)(const void*), uint16_t x, uint16_t y, uint16_t w, uint16_t h, const void* p)
@@ -820,7 +825,6 @@ void GxGDEM029T94::drawPagedToWindow(void (*drawCallback)(const void*), uint16_t
   }
   delay(GxGDEM029T94_PU_DELAY);
   _current_page = -1;
-  _PowerOff();
 }
 
 void GxGDEM029T94::drawPagedToWindow(void (*drawCallback)(const void*, const void*), uint16_t x, uint16_t y, uint16_t w, uint16_t h, const void* p1, const void* p2)
@@ -863,7 +867,6 @@ void GxGDEM029T94::drawPagedToWindow(void (*drawCallback)(const void*, const voi
   }
   delay(GxGDEM029T94_PU_DELAY);
   _current_page = -1;
-  _PowerOff();
 }
 
 void GxGDEM029T94::drawCornerTest(uint8_t em)

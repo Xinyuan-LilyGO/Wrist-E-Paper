@@ -388,21 +388,21 @@ void GxGDEW026T0::updateToWindow(uint16_t xs, uint16_t ys, uint16_t xd, uint16_t
         swap(xs, ys);
         swap(xd, yd);
         swap(w, h);
-        xs = GxGDEW026T0_WIDTH - xs - w - 1;
-        xd = GxGDEW026T0_WIDTH - xd - w - 1;
+        xs = GxGDEW026T0_WIDTH - xs - w;
+        xd = GxGDEW026T0_WIDTH - xd - w;
         break;
       case 2:
-        xs = GxGDEW026T0_WIDTH - xs - w - 1;
-        ys = GxGDEW026T0_HEIGHT - ys - h - 1;
-        xd = GxGDEW026T0_WIDTH - xd - w - 1;
-        yd = GxGDEW026T0_HEIGHT - yd - h - 1;
+        xs = GxGDEW026T0_WIDTH - xs - w;
+        ys = GxGDEW026T0_HEIGHT - ys - h;
+        xd = GxGDEW026T0_WIDTH - xd - w;
+        yd = GxGDEW026T0_HEIGHT - yd - h;
         break;
       case 3:
         swap(xs, ys);
         swap(xd, yd);
         swap(w, h);
-        ys = GxGDEW026T0_HEIGHT - ys  - h - 1;
-        yd = GxGDEW026T0_HEIGHT - yd  - h - 1;
+        ys = GxGDEW026T0_HEIGHT - ys  - h;
+        yd = GxGDEW026T0_HEIGHT - yd  - h;
         break;
     }
   }
@@ -748,16 +748,16 @@ void GxGDEW026T0::_rotate(uint16_t& x, uint16_t& y, uint16_t& w, uint16_t& h)
     case 1:
       swap(x, y);
       swap(w, h);
-      x = GxGDEW026T0_WIDTH - x - w - 1;
+      x = GxGDEW026T0_WIDTH - x - w;
       break;
     case 2:
-      x = GxGDEW026T0_WIDTH - x - w - 1;
-      y = GxGDEW026T0_HEIGHT - y - h - 1;
+      x = GxGDEW026T0_WIDTH - x - w;
+      y = GxGDEW026T0_HEIGHT - y - h;
       break;
     case 3:
       swap(x, y);
       swap(w, h);
-      y = GxGDEW026T0_HEIGHT - y - h - 1;
+      y = GxGDEW026T0_HEIGHT - y - h;
       break;
   }
 }

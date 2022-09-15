@@ -297,26 +297,7 @@ void GxGDEW029Z10::eraseDisplay(bool using_partial_update)
 void GxGDEW029Z10::updateWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h, bool using_rotation)
 {
   if (_current_page != -1) return;
-  if (using_rotation)
-  {
-    switch (getRotation())
-    {
-      case 1:
-        swap(x, y);
-        swap(w, h);
-        x = GxGDEW029Z10_WIDTH - x - w - 1;
-        break;
-      case 2:
-        x = GxGDEW029Z10_WIDTH - x - w - 1;
-        y = GxGDEW029Z10_HEIGHT - y - h - 1;
-        break;
-      case 3:
-        swap(x, y);
-        swap(w, h);
-        y = GxGDEW029Z10_HEIGHT - y  - h - 1;
-        break;
-    }
-  }
+  if (using_rotation) _rotate(x, y, w, h);
   if (x >= GxGDEW029Z10_WIDTH) return;
   if (y >= GxGDEW029Z10_HEIGHT) return;
   // x &= 0xFFF8; // byte boundary, not here, use encompassing rectangle
@@ -375,21 +356,21 @@ void GxGDEW029Z10::_writeToWindow(uint16_t xs, uint16_t ys, uint16_t xd, uint16_
         swap(xs, ys);
         swap(xd, yd);
         swap(w, h);
-        xs = GxGDEW029Z10_WIDTH - xs - w - 1;
-        xd = GxGDEW029Z10_WIDTH - xd - w - 1;
+        xs = GxGDEW029Z10_WIDTH - xs - w;
+        xd = GxGDEW029Z10_WIDTH - xd - w;
         break;
       case 2:
-        xs = GxGDEW029Z10_WIDTH - xs - w - 1;
-        ys = GxGDEW029Z10_HEIGHT - ys - h - 1;
-        xd = GxGDEW029Z10_WIDTH - xd - w - 1;
-        yd = GxGDEW029Z10_HEIGHT - yd - h - 1;
+        xs = GxGDEW029Z10_WIDTH - xs - w;
+        ys = GxGDEW029Z10_HEIGHT - ys - h;
+        xd = GxGDEW029Z10_WIDTH - xd - w;
+        yd = GxGDEW029Z10_HEIGHT - yd - h;
         break;
       case 3:
         swap(xs, ys);
         swap(xd, yd);
         swap(w, h);
-        ys = GxGDEW029Z10_HEIGHT - ys  - h - 1;
-        yd = GxGDEW029Z10_HEIGHT - yd  - h - 1;
+        ys = GxGDEW029Z10_HEIGHT - ys  - h;
+        yd = GxGDEW029Z10_HEIGHT - yd  - h;
         break;
     }
   }
@@ -699,16 +680,16 @@ void GxGDEW029Z10::_rotate(uint16_t& x, uint16_t& y, uint16_t& w, uint16_t& h)
     case 1:
       swap(x, y);
       swap(w, h);
-      x = GxGDEW029Z10_WIDTH - x - w - 1;
+      x = GxGDEW029Z10_WIDTH - x - w;
       break;
     case 2:
-      x = GxGDEW029Z10_WIDTH - x - w - 1;
-      y = GxGDEW029Z10_HEIGHT - y - h - 1;
+      x = GxGDEW029Z10_WIDTH - x - w;
+      y = GxGDEW029Z10_HEIGHT - y - h;
       break;
     case 3:
       swap(x, y);
       swap(w, h);
-      y = GxGDEW029Z10_HEIGHT - y - h - 1;
+      y = GxGDEW029Z10_HEIGHT - y - h;
       break;
   }
 }
@@ -852,4 +833,3 @@ void GxGDEW029Z10::drawCornerTest(uint8_t em)
   _waitWhileBusy("drawCornerTest");
   _sleep();
 }
-

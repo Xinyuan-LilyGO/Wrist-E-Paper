@@ -1,5 +1,6 @@
 #include <GxEPD.h>
-#include <GxDEPG0150BN/GxDEPG0150BN.h>
+#include <GxDEPG0150BN/GxDEPG0150BN.h>    // 1.54" b/w 200x200
+// #include <GxGDEH0154Z90/GxGDEH0154Z90.h>  // 1.54" b/w/r 200x200
 #include <GxIO/GxIO_SPI/GxIO_SPI.h>
 #include <GxIO/GxIO.h>
 #include "IMG.h"
@@ -108,6 +109,9 @@ void printLocalTime(uint16_t x, uint16_t y)
   display.print(&timeinfo, "%Y  %b  %a");
   display.setCursor(x, y + 20);
   display.setTextSize(7);
+#ifdef _GxGDEH0154Z90_H_
+  display.setTextColor(GxEPD_RED);
+#endif
   display.printf("%02d", rtc.getHour());
   display.setCursor(x + 80, y + 20);
   display.print(":");

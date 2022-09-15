@@ -1,5 +1,6 @@
 #include <GxEPD.h>
-#include <GxDEPG0150BN/GxDEPG0150BN.h>
+#include <GxDEPG0150BN/GxDEPG0150BN.h>    // 1.54" b/w 200x200
+// #include <GxGDEH0154Z90/GxGDEH0154Z90.h>  // 1.54" b/w/r 200x200
 #include <GxIO/GxIO_SPI/GxIO_SPI.h>
 #include <GxIO/GxIO.h>
 #include <WiFi.h>

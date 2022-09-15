@@ -1,7 +1,8 @@
 // class GxGDEM029T94 : Display class for GDEM029T94 e-Paper from Dalian Good Display Co., Ltd.: www.e-paper-display.com
 //
 // based on Demo Example from Good Display, available here: http://www.e-paper-display.com/download_detail/downloadsId=806.html
-// Controller : SSD1681 : http://www.e-paper-display.com/download_detail/downloadsId=825.html
+// Panel: GDEM029T94 : https://www.good-display.com/product/360.html
+// Controller : SSD1680 : https://www.good-display.com/companyfile/101.html
 //
 // Author : J-M Zingg
 //
@@ -102,6 +103,7 @@ class GxGDEM029T94 : public GxEPD
     int16_t _current_page;
     bool _using_partial_mode;
     bool _diag_enabled;
+    bool _power_is_on;
     int8_t _rst;
     int8_t _busy;
     static const uint16_t power_on_time = 80; // ms, e.g. 73508us
